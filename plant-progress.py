@@ -1,6 +1,7 @@
 import mysql.connector
 import datetime
-now=datetime.datetime.now()
+from datetime import datetime
+now=datetime.now()
 current_hour = now.hour
 if current_hour < 12:
     print("Good morning!")
@@ -84,9 +85,7 @@ def display_specific_details():
     print("planted_on",i[5])
     print("current_watering_status",i[8])
     print("Days_without_water",i[9])
-    time=now.strftime("%Y-%m-%d")
-    current_watering_status = datetime.datetime.strptime(i[8], "%Y-%m-%d")
-
+    current_watering_status = datetime.strptime(str(i[8]), "%Y-%m-%d")
     current_date = datetime.now()
     difference = current_date - current_watering_status
     # Extract the number of days from the difference
