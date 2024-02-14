@@ -103,7 +103,6 @@ def display_specific_details():
 
 
 
-
 create()
 #add_dtl()
 display_details()
