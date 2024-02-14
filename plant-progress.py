@@ -75,30 +75,27 @@ def display_details():
 def display_specific_details():
     i=input("enter choice to check specific")
     mycursor.execute("select * from plant_detail A,plant_progress B where A.plant_id = {}".format(i))
-    print(Fore.RED+"plant_id |",Fore.BLUE+" plant_name |",Fore.RED+" plant_type |",Fore.BLUE+" watering_schedule |",Fore.RED+" Special_consideration |",Fore.BLUE+" planted_on |",Fore.RED+" plant_id |",Fore.BLUE+" plant_name |",Fore.RED+" current_watering_status |",Fore.BLUE+" Days_without_water")
-    list=[9,11,12,19,23,12,10,12,25,19]
-    l=0
-    for rec in mycursor:
-        if rec[0]==i:
-            print("|",end="")
-            for i in rec:
-                lenn=len(str(i))
-                if lenn<list[l]:
-                    if l%2==0:
-                        res=list[l]-lenn
-                        print(Fore.RED+"",i," "*res,"|",end='')
-                        print(Style.RESET_ALL,end="")
-                        l=l+1
-                    else:
-                        res=list[l]-lenn
-                        print(Fore.BLUE+"",i," "*res,"|",end='')
-                        print(Style.RESET_ALL,end="")
-                        l=l+1  
-                else:
-                    print(i)
-                    l=l+1
-        print()
-        l=0
+    i=mycursor.fetchone()
+    print("plant id",i[0])
+    print("plant_name",i[1])
+    print("plant_type",i[2])
+    print("watering_schedule",i[3])
+    print("Special_consideration",i[4])
+    print("planted_on",i[5])
+    print("current_watering_status",i[8])
+    print("Days_without_water",i[9])
+    time=now.strftime("%Y-%m-%d")
+    current_watering_status = datetime.datetime.strptime(i[8], "%Y-%m-%d")
+
+    current_date = datetime.now()
+    difference = current_date - current_watering_status
+    # Extract the number of days from the difference
+    result = difference.days
+    print(result)
+
+
+
+    
 
 
 
@@ -107,6 +104,7 @@ create()
 #add_dtl()
 display_details()
 display_specific_details()
+
 
 
 
