@@ -26,7 +26,7 @@ mycursor = db.cursor()
 def create():
     try:
         mycursor.execute("create table plant_detail (plant_id varchar(10) Primary key ,plant_name varchar(20),plant_type varchar(20),watering_schedule int,Special_consideration varchar(30),planted_on date)")
-        mycursor.execute("create table plant_progress (plant_id varchar(10) Primary key,plant_name varchar(20),current_watering_status date,Days_without_water int)")
+        mycursor.execute("create table plant_progress (plant_id varchar(10) Primary key,plant_name varchar(20),current_watering_status date)")
     except:
         print("File exists")
         
@@ -43,17 +43,17 @@ def add_dtl():
 
     try:
         mycursor.execute("insert into plant_detail (plant_id,plant_name,plant_type,watering_schedule,special_consideration,planted_on) values ('{}','{}','{}',{},'{}','{}')".format(plant_id,plant_name,plant_type,watering_schedule,special_consideration,planted_on))
-        mycursor.execute("insert into plant_progress (plant_id,plant_name,current_watering_status,Days_without_water) values ('{}','{}','{}',{})".format(plant_id,plant_name,current_watering_status,Days_without_water))
+        mycursor.execute("insert into plant_progress (plant_id,plant_name,current_watering_status) values ('{}','{}','{}')".format(plant_id,plant_name,current_watering_status))
         db.commit()
     except:
         print("Error: details not entered")
 def display_details():
     mycursor.execute("select * from plant_detail A,plant_progress B where A.plant_id = B.plant_id")
-    print(Fore.RED+"plant_id |",Fore.BLUE+" plant_name |",Fore.RED+" plant_type |",Fore.BLUE+" watering_schedule |",Fore.RED+" Special_consideration |",Fore.BLUE+" planted_on |",Fore.RED+" plant_id |",Fore.BLUE+" plant_name |",Fore.RED+" current_watering_status |",Fore.BLUE+" Days_without_water")
-    list=[9,11,12,19,23,12,10,12,25,19]
+    print(Fore.RED+"plant_id |",Fore.BLUE+" plant_name |",Fore.RED+" plant_type |",Fore.BLUE+" watering_schedule |",Fore.RED+" Special_consideration |",Fore.BLUE+" planted_on |",Fore.RED+" plant_id |",Fore.BLUE+" plant_name |",Fore.RED+" current_watering_status |")
+    list=[8,16,14,26,31,12,10,12,12]
     l=0
     for rec in mycursor:
-        print("|",end="")
+        print(Fore.RED+"|",end="")
         for i in rec:
             lenn=len(str(i))
             if lenn<list[l]:
@@ -74,23 +74,26 @@ def display_details():
         l=0
                 
 def display_specific_details():
-    i=input("enter choice to check specific")
-    mycursor.execute("select * from plant_detail A,plant_progress B where A.plant_id = {}".format(i))
-    i=mycursor.fetchone()
-    print("plant id",i[0])
-    print("plant_name",i[1])
-    print("plant_type",i[2])
-    print("watering_schedule",i[3])
-    print("Special_consideration",i[4])
-    print("planted_on",i[5])
-    print("current_watering_status",i[8])
-    print("Days_without_water",i[9])
-    current_watering_status = datetime.strptime(str(i[8]), "%Y-%m-%d")
-    current_date = datetime.now()
-    difference = current_date - current_watering_status
-    # Extract the number of days from the difference
-    result = difference.days
-    print(result)
+    try:
+        i=input("enter choice to check specific")
+        mycursor.execute("select * from plant_detail A,plant_progress B where A.plant_id=B.plant_id and A.plant_id = {}".format(i))
+        i=mycursor.fetchone()
+        print("plant id",i[0])
+        print("plant_name",i[1])
+        print("plant_type",i[2])
+        print("watering_schedule",i[3])
+        print("Special_consideration",i[4])
+        print("planted_on",i[5])
+        print("current_watering_status",i[8])
+        print("Days_without_water:-",)
+        current_watering_status = datetime.strptime(str(i[8]), "%Y-%m-%d")
+        current_date = datetime.now()
+        difference = current_date - current_watering_status
+        # Extract the number of days from the difference
+        result = difference.days
+        print(result)
+    except:
+        print("No Data..")
 
 
 
