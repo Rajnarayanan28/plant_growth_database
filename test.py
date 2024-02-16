@@ -23,6 +23,10 @@ def display_details():
     print_table(l,list)
 
 display_details()
+<<<<<<< HEAD
 
 #hello
 #how are u 
+=======
+#hell yaaaaa
+>>>>>>> 6cc38429f5146e5939b76c23dc4045673fb06656
