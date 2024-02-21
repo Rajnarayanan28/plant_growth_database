@@ -1,3 +1,5 @@
+
+'''
 import mysql.connector
 from colorama import Fore, Back, Style
 db = mysql.connector.connect(host='localhost', user='root', password='3372', database='plant')
@@ -30,3 +32,15 @@ display_details()
 =======
 #hell yaaaaa
 >>>>>>> 6cc38429f5146e5939b76c23dc4045673fb06656
+'''
+import datetime
+from datetime import datetime
+now=datetime.now()
+print(now)
+dt = datetime.now()
+
+# Format the date
+formatted_date = dt.strftime("%Y-%m-%d")
+print(type(formatted_date))
+# Display the formatted date
+print("Formatted Date:", formatted_date)

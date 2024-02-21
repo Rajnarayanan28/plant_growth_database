@@ -96,19 +96,78 @@ def display_specific_details():
         print("No Data..")
 
 
+def water():
+    display_details()
+    plant_id = input("Enter plant ID to check specific: ")
 
+    mycursor.execute("SELECT * FROM plant_detail A, plant_progress B WHERE A.plant_id=B.plant_id AND A.plant_id = {}".format(plant_id))
+    plant_details = mycursor.fetchone()
+    print("Plant details:", plant_details)
     
+    
+    formatted_date = datetime.now().strftime("%Y-%m-%d")
+    print("Formatted Date:", formatted_date)
+    try:
+        mycursor.execute("UPDATE plant_progress SET current_watering_status = %s WHERE plant_id = %s", (formatted_date, plant_id))
+        db.commit()
+        print("Plant has been watered")
+    except Exception as e:
+        print("Error has occurred:", e)
+
+def delete_record():
+    plant_id=input("enter plant_id")
+    try:
+        mycursor.execute("DELETE FROM plant_progress WHERE plant_id = %s", (plant_id,))
+        db.commit()
+        mycursor.execute("DELETE FROM plant_detail WHERE plant_id = %s", (plant_id,))
+        db.commit()
+        print("Record with plant ID {} deleted successfully.".format(plant_id))
+    except Exception as e:
+        print("Error occurred while deleting record:", e)
 
 
-
-
-create()
-add_dtl()
+def edit_details():
+    display_details()
+    plant_id=input("enter plant_id")
+    print("select choice : ")
+    print("\n1.plant name\n2.plant_type \n3.watering_schedule \n4.special consideration\n")
+    i=int(input(":-"))
+    if i == 1:
+        name=input("enter name")
+        try:
+            mycursor.execute("UPDATE plant_detail SET plant_name = %s WHERE plant_id = %s", (name, plant_id))
+            db.commit()
+        except:
+            print("error occured")
+    elif i == 2:
+        plant_type=input("enter plant type")
+        try:
+            mycursor.execute("UPDATE plant_detail SET plant_type = %s WHERE plant_id = %s", (plant_type, plant_id))
+            db.commit()
+        except:
+            print("error occured")
+    elif i == 3:
+        watering_schedule=int(input("enter watering schedule"))
+        try:
+            mycursor.execute("UPDATE plant_detail SET watering_schedule = %s WHERE plant_id = %s", (watering_schedule, plant_id))
+            db.commit()
+        except:
+            print("error occured")
+    elif i == 4:
+        Special_consideration=input("enter special consideration")
+        try:
+            mycursor.execute("UPDATE plant_detail SET Special_consideration = %s WHERE plant_id = %s", (Special_consideration, plant_id))
+            db.commit()
+        except:
+            print("error occured")
+    else:
+        pass
+    
+    
+        
+    
+        
+     
+edit_details()
 display_details()
-display_specific_details()
-
-
-
-
-
 #have to be compleated on 22
