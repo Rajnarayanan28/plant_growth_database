@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
 import mysql.connector
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Establish database connection
 db = mysql.connector.connect(host='localhost', user='root', password='3372', database='plant')
@@ -90,15 +90,17 @@ class PlantManagerApp(tk.Tk):
         except Exception as e:
             messagebox.showerror("Error", f"Error occurred: {e}")
 
-    def display_details(self):
-        display_window = tk.Toplevel(self)
+    def display_details(self):  # Add 'self' as the first parameter
+        mycursor.execute("SELECT * FROM plant_detail A, plant_progress B WHERE A.plant_id = B.plant_id")
+        
+        display_window = tk.Toplevel()
         display_window.title("Display Plant Details")
         display_window.geometry("800x400")
 
         label = tk.Label(display_window, text="Plant Details", font=("Arial", 16))
         label.pack(pady=10)
 
-        tree = ttk.Treeview(display_window, columns=("Plant ID", "Plant Name", "Plant Type", "Watering Schedule", "Special Considerations", "Planted On"), show="headings", selectmode="browse")
+        tree = ttk.Treeview(display_window, columns=("Plant ID", "Plant Name", "Plant Type", "Watering Schedule", "Special Considerations", "Planted On", "Need Water"), show="headings", selectmode="browse")
 
         # Define column headings
         tree.heading("Plant ID", text="Plant ID")
@@ -107,6 +109,7 @@ class PlantManagerApp(tk.Tk):
         tree.heading("Watering Schedule", text="Watering Schedule")
         tree.heading("Special Considerations", text="Special Considerations")
         tree.heading("Planted On", text="Planted On")
+        tree.heading("Need Water", text="Need Water")
 
         # Define column widths
         tree.column("Plant ID", width=100)
@@ -115,17 +118,76 @@ class PlantManagerApp(tk.Tk):
         tree.column("Watering Schedule", width=150)
         tree.column("Special Considerations", width=150)
         tree.column("Planted On", width=100)
+        tree.column("Need Water", width=100)
 
         tree.pack(fill="both", expand=True)
 
         try:
-            mycursor.execute("SELECT * FROM plant_detail A, plant_progress B WHERE A.plant_id = B.plant_id")
-            details = mycursor.fetchall()
-            for detail in details:
-                tree.insert("", "end", values=detail)
+            for rec in mycursor:
+                # Calculate if the plant needs water
+                start_date = rec[-1]
+                days_to_add = rec[3]
+                delta = timedelta(days=days_to_add)
+                result_date = start_date + delta  
+                current_date = datetime.now()
+                difference = current_date - result_date
+                need_water = "Yes" if difference.days > 0 else "No"
+                
+                # Insert the plant details into the treeview
+                tree.insert("", "end", values=(*rec, need_water))
         except Exception as e:
             messagebox.showerror("Error", f"Error occurred: {e}")
-            
+
+    def display_details(self):
+        mycursor.execute("SELECT * FROM plant_detail A, plant_progress B WHERE A.plant_id = B.plant_id")
+        
+        display_window = tk.Toplevel()
+        display_window.title("Display Plant Details")
+        display_window.geometry("800x400")
+
+        label = tk.Label(display_window, text="Plant Details", font=("Arial", 16))
+        label.pack(pady=10)
+
+        tree = ttk.Treeview(display_window, columns=("Plant ID", "Plant Name", "Plant Type", "Watering Schedule", "Special Considerations", "Planted On", "Need Water"), show="headings", selectmode="browse")
+
+        # Define column headings
+        tree.heading("Plant ID", text="Plant ID")
+        tree.heading("Plant Name", text="Plant Name")
+        tree.heading("Plant Type", text="Plant Type")
+        tree.heading("Watering Schedule", text="Watering Schedule")
+        tree.heading("Special Considerations", text="Special Considerations")
+        tree.heading("Planted On", text="Planted On")
+        tree.heading("Need Water", text="Need Water")
+
+        # Define column widths
+        tree.column("Plant ID", width=100)
+        tree.column("Plant Name", width=100)
+        tree.column("Plant Type", width=100)
+        tree.column("Watering Schedule", width=150)
+        tree.column("Special Considerations", width=150)
+        tree.column("Planted On", width=100)
+        tree.column("Need Water", width=100)
+
+        tree.pack(fill="both", expand=True)
+
+        try:
+            for rec in mycursor:
+                # Convert start_date to datetime.datetime
+                start_date = datetime.combine(rec[-1], datetime.min.time())
+                days_to_add = rec[3]
+                delta = timedelta(days=days_to_add)
+                result_date = start_date + delta
+                current_date = datetime.now()
+                
+                # Calculate if the plant needs water
+                difference = current_date - result_date
+                need_water = "Yes" if difference.days > 0 else "No"
+                
+                # Insert the plant details into the treeview
+                tree.insert("", "end", values=(*rec[:6], need_water))
+        except Exception as e:
+            messagebox.showerror("Error", f"Error occurred: {e}")
+                
     def water_window(self):
         water_window = tk.Toplevel(self)
         water_window.title("Water Plants")
@@ -272,4 +334,3 @@ class PlantManagerApp(tk.Tk):
 if __name__ == "__main__":
     app = PlantManagerApp()
     app.mainloop()
-

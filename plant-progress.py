@@ -16,7 +16,8 @@ mycursor = db.cursor()
 try:
     mycursor.execute('create database plant')
 except:
-    print("hello")
+    print('...create...')
+    print("..")
 
 import mysql.connector
 db = mysql.connector.connect(host='localhost', user='root', password='3372', database='plant')
@@ -163,11 +164,29 @@ def edit_details():
     else:
         pass
     
+com=0
+while com!=1:
+    print("enter choice :\n1.add_dtl \n2.display_details \n3.display_specific_details \n4.water \n5.delete_record \n6.edit_details \n")
+    i=int(input(":-"))
+    if i==1:
+        add_dtl()
+        print()
+    elif i==2:
+        display_details()
+        print()
+    elif i==3:
+        display_specific_details()
+        print()
+    elif i==4:
+        water()
+        print()
+    elif i==5:
+        delete_record()
+        print()
+    elif i==6:
+        edit_details()
+        print()
+    else:
+        com=1
+
     
-        
-    
-        
-     
-edit_details()
-display_details()
-#have to be compleated on 22
