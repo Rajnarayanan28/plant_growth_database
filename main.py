@@ -7,7 +7,14 @@ from datetime import datetime, timedelta
 db = mysql.connector.connect(host='localhost', user='root', password='3372', database='plant')
 mycursor = db.cursor()
 
-
+def create():
+    try:
+        mycursor.execute("create table plant_detail (plant_id varchar(10) Primary key ,plant_name varchar(20),plant_type varchar(20),watering_schedule int,Special_consideration varchar(30),planted_on date)")
+        mycursor.execute("create table plant_progress (plant_id varchar(10) Primary key,plant_name varchar(20),current_watering_status date)")
+    except:
+        print("File exists")
+        
+create()
 # Tkinter App
 class PlantManagerApp(tk.Tk):
     def __init__(self):
